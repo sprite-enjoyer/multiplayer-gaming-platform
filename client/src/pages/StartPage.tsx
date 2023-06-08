@@ -1,14 +1,15 @@
 import { Button, Container, TextField } from "@mui/material";
-import { useState } from "react";
-import GlobalStore from "../stores/GlobalStore";
+import { useContext, useState } from "react";
+import { GlobalStoreContext } from "../App";
+import { observer } from "mobx-react";
 
 interface StartPageProps {
-  globalStore: GlobalStore,
 }
 
-const StartPage = ({ globalStore }: StartPageProps) => {
+const StartPage = ({ }: StartPageProps) => {
 
   const [inputValue, setInputValue] = useState("");
+  const globalStore = useContext(GlobalStoreContext);
 
   return (
     <div
@@ -57,4 +58,4 @@ const StartPage = ({ globalStore }: StartPageProps) => {
   );
 };
 
-export default StartPage;
+export default observer(StartPage);

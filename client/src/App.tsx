@@ -1,6 +1,8 @@
 import { createContext } from "react";
 import StartPage from "./pages/StartPage";
 import GlobalStore from "./stores/GlobalStore";
+import GamesList from "./pages/GamesList";
+import { observer } from "mobx-react";
 
 const globalStore = new GlobalStore();
 export const GlobalStoreContext = createContext(globalStore);
@@ -23,10 +25,10 @@ const App = () => {
     }}
     >
       <GlobalStoreContext.Provider value={globalStore}>
-        <StartPage globalStore={globalStore} />
+        {globalStore.playerName ? <GamesList /> : <StartPage />}
       </GlobalStoreContext.Provider>
     </div>
   );
 };
 
-export default App;
+export default observer(App);
