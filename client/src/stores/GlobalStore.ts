@@ -1,7 +1,5 @@
 import { action, computed, makeObservable, observable } from "mobx"
 import { Game } from "../misc/types";
-import MemoryGame from "../games/MemoryGame";
-import TicTacToe from "../games/TicTacToe";
 
 class GlobalStore {
 

@@ -4,10 +4,10 @@ import { observer } from "mobx-react";
 import RoutesManager from "./components/RoutesManager";
 import { BrowserRouter } from "react-router-dom";
 
-export const GlobalStoreContext = createContext<GlobalStore | undefined>(undefined);
+const globalStore = new GlobalStore();
+export const GlobalStoreContext = createContext(globalStore);
 
 const App = () => {
-  const globalStore = new GlobalStore();
   return (
     <div style={{
       position: "absolute",

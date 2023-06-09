@@ -15,6 +15,7 @@ const RoomChoosingDialog = ({ gamesListStore }: RoomChoosingDialogProps) => {
   const navigate = useNavigate();
 
   const handleButtonClick = () => {
+    if (inputValue === "") return;
     globalStore?.setRoomID(inputValue);
     globalStore?.setCurrentGame(gamesListStore.forWhichGameDialogIsOpen);
     gamesListStore.setDialogOpen(false);
@@ -42,6 +43,7 @@ const RoomChoosingDialog = ({ gamesListStore }: RoomChoosingDialogProps) => {
           }}
         >
           <TextField
+            autoFocus
             onChange={(e) => setInputValue(e.target.value)}
             label="Room ID"
           />

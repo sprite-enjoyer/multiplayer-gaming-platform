@@ -48,6 +48,7 @@ const StartPage = ({ }: StartPageProps) => {
         }}
       >
         <TextField
+          autoFocus
           fullWidth
           label="Player Name"
           onChange={(e) => setInputValue(e.target.value)}

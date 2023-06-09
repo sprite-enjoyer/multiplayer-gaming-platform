@@ -13,19 +13,29 @@ const RoutesManager = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-
     if (globalStore?.hasPlayerJoinedGame) navigate("/game");
     navigate(globalStore?.isPlayerPresent ? "/gamesList" : "/");
-
   }, [globalStore?.hasPlayerJoinedGame, globalStore?.isPlayerPresent]);
 
   return (
-    <Routes>
-      <Route path="/" element={<StartPage />} />
-      <Route path="/gamesList" element={<GamesList />} />
-      <Route path="/TicTacToe" element={<GameRenderer GameElement={TicTacToe} />} />
-      <Route path="/MemoryGame" element={<GameRenderer GameElement={MemoryGame} />} />
-    </Routes>
+    <div
+      style={{
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "100vw",
+        height: "100vh",
+        margin: "0",
+        padding: "0",
+      }}
+    >
+      <Routes>
+        <Route path="/" element={<StartPage />} />
+        <Route path="/gamesList" element={<GamesList />} />
+        <Route path="/TicTacToe" element={<GameRenderer GameElement={TicTacToe} />} />
+        <Route path="/MemoryGame" element={<GameRenderer GameElement={MemoryGame} />} />
+      </Routes>
+    </div>
   )
 };
 
