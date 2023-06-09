@@ -1,10 +1,15 @@
 import { action, computed, makeObservable, observable } from "mobx"
+import { Game } from "../misc/types";
+import MemoryGame from "../games/MemoryGame";
+import TicTacToe from "../games/TicTacToe";
 
 class GlobalStore {
 
-  playerName?: string
+  playerName?: string;
 
-  roomID?: string
+  roomID?: string;
+
+  currentGame?: Game;
 
   constructor() {
     makeObservable(this, {
@@ -12,8 +17,10 @@ class GlobalStore {
       roomID: observable,
       setPlayerName: action,
       setRoomID: action,
+      setCurrentGame: action,
       isPlayerPresent: computed,
       hasPlayerJoinedRoom: computed,
+      hasPlayerJoinedGame: computed,
     });
   }
 
@@ -25,12 +32,20 @@ class GlobalStore {
     this.roomID = newValue;
   }
 
+  setCurrentGame(newValue?: Game) {
+    this.currentGame = newValue;
+  }
+
   get isPlayerPresent() {
     return !!this.playerName;
   }
 
   get hasPlayerJoinedRoom() {
     return !!this.roomID;
+  }
+
+  get hasPlayerJoinedGame() {
+    return this.currentGame !== undefined;
   }
 
 }

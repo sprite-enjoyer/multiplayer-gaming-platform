@@ -1,16 +1,25 @@
 import { Box, Button, Container } from "@mui/material";
+import { ReactNode } from "react";
+import { Game } from "../misc/types";
+import GamesListStore from "../stores/GamesListStore";
 
 interface GameCardProps {
   imageUrl: string,
-  name: string,
-  onClick: () => void,
+  children: ReactNode,
+  game: Game,
+  gamesListStore: GamesListStore,
 }
 
-const GameCard = ({ imageUrl, name, onClick }: GameCardProps) => {
+const GameCard = ({ imageUrl, children, gamesListStore, game }: GameCardProps) => {
+
+  const handleClick = () => {
+    gamesListStore.setDialogOpen(true);
+    gamesListStore.setForWhichGameDialogIsOpen(game);
+  };
 
   return (
     <Button
-      onClick={onClick}
+      onClick={handleClick}
       sx={{
         color: "rgba(2, 232, 18, 1)",
         fontWeight: "600",
@@ -57,9 +66,8 @@ const GameCard = ({ imageUrl, name, onClick }: GameCardProps) => {
             margin: "0",
           }}
         >
-          {name}
+          {children}
         </Container>
-
       </Box>
     </Button>
   );

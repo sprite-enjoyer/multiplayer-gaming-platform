@@ -1,14 +1,13 @@
-import { createContext } from "react";
-import StartPage from "./pages/StartPage";
+import { createContext, useMemo } from "react";
 import GlobalStore from "./stores/GlobalStore";
-import GamesList from "./pages/GamesList";
 import { observer } from "mobx-react";
+import RoutesManager from "./components/RoutesManager";
+import { BrowserRouter } from "react-router-dom";
 
-const globalStore = new GlobalStore();
-export const GlobalStoreContext = createContext(globalStore);
+export const GlobalStoreContext = createContext<GlobalStore | undefined>(undefined);
 
 const App = () => {
-
+  const globalStore = new GlobalStore();
   return (
     <div style={{
       position: "absolute",
@@ -25,7 +24,9 @@ const App = () => {
     }}
     >
       <GlobalStoreContext.Provider value={globalStore}>
-        {globalStore.playerName ? <GamesList /> : <StartPage />}
+        <BrowserRouter>
+          <RoutesManager />
+        </BrowserRouter>
       </GlobalStoreContext.Provider>
     </div>
   );

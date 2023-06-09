@@ -2,14 +2,21 @@ import { Button, Container, TextField } from "@mui/material";
 import { useContext, useState } from "react";
 import { GlobalStoreContext } from "../App";
 import { observer } from "mobx-react";
+import { useNavigate } from "react-router-dom";
 
 interface StartPageProps {
 }
 
 const StartPage = ({ }: StartPageProps) => {
-
   const [inputValue, setInputValue] = useState("");
   const globalStore = useContext(GlobalStoreContext);
+  const navigate = useNavigate();
+
+  const handleButtonClick = () => {
+    if (inputValue.length === 0) return;
+    globalStore?.setPlayerName(inputValue);
+    navigate("/gamesList");
+  };
 
   return (
     <div
@@ -49,7 +56,7 @@ const StartPage = ({ }: StartPageProps) => {
           fullWidth
           size={"large"}
           variant={"contained"}
-          onClick={() => inputValue.length !== 0 && globalStore.setPlayerName(inputValue)}
+          onClick={handleButtonClick}
         >
           Start
         </Button>
