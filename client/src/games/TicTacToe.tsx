@@ -1,6 +1,5 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { GlobalStoreContext } from "../App";
-import GameStore from "../stores/GameStore";
 import { observer } from "mobx-react";
 import ScoreStore from "../stores/ScoreStore";
 import TicTacToeStore from "../stores/TicTacToeStore";
@@ -13,8 +12,12 @@ interface TicTacToeProps {
 
 const TicTacToe = ({ scoreStore }: TicTacToeProps) => {
   const globalStore = useContext(GlobalStoreContext);
-  const gameStore = new GameStore(globalStore);
-  const ticTacToeStore = new TicTacToeStore(scoreStore);
+  const ticTacToeStore = new TicTacToeStore(scoreStore, globalStore);
+
+  useEffect(() => {
+    ticTacToeStore.joinRoom();
+    ticTacToeStore.receiveMessage();
+  }, []);
 
   return (
     <Box

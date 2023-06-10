@@ -13,6 +13,7 @@ class GlobalStore {
     makeObservable(this, {
       playerName: observable,
       roomID: observable,
+      currentGame: observable,
       setPlayerName: action,
       setRoomID: action,
       setCurrentGame: action,

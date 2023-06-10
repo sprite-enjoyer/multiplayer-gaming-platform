@@ -16,8 +16,8 @@ const RoomChoosingDialog = ({ gamesListStore }: RoomChoosingDialogProps) => {
 
   const handleButtonClick = () => {
     if (inputValue === "") return;
-    globalStore?.setRoomID(inputValue);
-    globalStore?.setCurrentGame(gamesListStore.forWhichGameDialogIsOpen);
+    globalStore.setRoomID(inputValue);
+    globalStore.setCurrentGame(gamesListStore.forWhichGameDialogIsOpen);
     gamesListStore.setDialogOpen(false);
     gamesListStore.setForWhichGameDialogIsOpen(undefined);
     navigate(`/${globalStore?.currentGame}`);
