@@ -21,13 +21,18 @@ server.listen(PORT, () => {
 });
 io.on("connection", (socket) => {
     console.log("connected: ", socket.id);
+    socket.on("disconnecting", (reason) => {
+        console.log("socket disconnected, reason: ", reason);
+    });
     socket.on("join-room", async (roomID, callback) => {
+        console.log(roomID, ": roomID");
         if (!roomID) {
             callback(0, false);
             console.log("room id is undefined!");
             return;
         }
         const { length } = await io.in(roomID).fetchSockets();
+        console.log(length, ": length!");
         if ((length) === 2) {
             callback(length, false);
             return;
@@ -36,6 +41,7 @@ io.on("connection", (socket) => {
         callback(length, true);
     });
     socket.on("send-message", (message, room) => {
+        console.log("received message: ", message);
         socket.broadcast.to(room).emit("receive-message", message);
     });
 });

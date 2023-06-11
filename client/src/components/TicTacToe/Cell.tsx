@@ -1,22 +1,29 @@
 import X from "../../assets/x.svg";
 import O from "../../assets/o.svg";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import TicTacToeStore from "../../stores/TicTacToeStore";
+import { Player } from "../../misc/types";
+import { observer } from "mobx-react";
 
 interface CellProps {
   ticTacToeStore: TicTacToeStore,
   position: number,
+  mark?: Player,
 };
 
-const Cell = ({ ticTacToeStore, position }: CellProps) => {
-  const [isClicked, setIsClicked] = useState(false);
-  const [imageUrl, setImageUrl] = useState("");
+const Cell = ({ ticTacToeStore, position, mark }: CellProps) => {
+  const imageUrl = useMemo(() => {
+    if (!mark) return "";
+    return mark === "X" ? X : O;
+  }, [mark])
 
   const handleClick = () => {
-    if (isClicked) return;
+    if (mark || ticTacToeStore.frozen) {
+      console.log("the cell is clicked or frozen");
+      return;
+    }
+
     ticTacToeStore.makeMove(position);
-    setImageUrl(ticTacToeStore.player === "X" ? X : O);
-    setIsClicked(true);
   }
 
   return (
@@ -33,7 +40,7 @@ const Cell = ({ ticTacToeStore, position }: CellProps) => {
       onClick={handleClick}
     >
       {
-        isClicked &&
+        mark &&
         <img
           src={imageUrl}
           style={{
@@ -49,4 +56,4 @@ const Cell = ({ ticTacToeStore, position }: CellProps) => {
   );
 };
 
-export default Cell;
+export default observer(Cell);

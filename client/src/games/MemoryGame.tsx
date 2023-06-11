@@ -9,7 +9,6 @@ export interface MemoryGameProps {
 
 const MemoryGame = ({ scoreStore }: MemoryGameProps) => {
   const globalStore = useContext(GlobalStoreContext);
-  const gameStore = new GameStore(globalStore);
 
   return (
     <div>

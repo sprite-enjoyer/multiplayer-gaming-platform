@@ -1,10 +1,9 @@
 import { useContext, useEffect } from "react";
 import { GlobalStoreContext } from "../App";
-import { observer } from "mobx-react";
 import ScoreStore from "../stores/ScoreStore";
 import TicTacToeStore from "../stores/TicTacToeStore";
 import { Box } from "@mui/material";
-import Cell from "../components/TicTacToe/Cell";
+import CellList from "../components/TicTacToe/CellList";
 
 interface TicTacToeProps {
   scoreStore: ScoreStore
@@ -17,6 +16,10 @@ const TicTacToe = ({ scoreStore }: TicTacToeProps) => {
   useEffect(() => {
     ticTacToeStore.joinRoom();
     ticTacToeStore.receiveMessage();
+
+    return () => {
+      ticTacToeStore.socket.disconnect();
+    };
   }, []);
 
   return (
@@ -30,17 +33,9 @@ const TicTacToe = ({ scoreStore }: TicTacToeProps) => {
         gap: "5px",
       }}
     >
-      {
-        ticTacToeStore.gameBoard.map((_, i) =>
-          <Cell
-            key={i}
-            ticTacToeStore={ticTacToeStore}
-            position={i}
-          />
-        )
-      }
+      <CellList ticTacToeStore={ticTacToeStore} />
     </Box>
   );
 };
 
-export default observer(TicTacToe);
+export default TicTacToe;

@@ -4,10 +4,7 @@ import { GlobalStoreContext } from "../App";
 import { observer } from "mobx-react";
 import { useNavigate } from "react-router-dom";
 
-interface StartPageProps {
-}
-
-const StartPage = ({ }: StartPageProps) => {
+const StartPage = () => {
   const [inputValue, setInputValue] = useState("");
   const globalStore = useContext(GlobalStoreContext);
   const navigate = useNavigate();

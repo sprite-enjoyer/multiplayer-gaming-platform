@@ -13,8 +13,13 @@ const RoutesManager = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (globalStore?.hasPlayerJoinedGame) navigate("/game");
+    if (globalStore?.hasPlayerJoinedGame) {
+      navigate(`/${globalStore.currentGame}`);
+      return;
+    }
+
     navigate(globalStore?.isPlayerPresent ? "/gamesList" : "/");
+
   }, [globalStore?.hasPlayerJoinedGame, globalStore?.isPlayerPresent]);
 
   return (

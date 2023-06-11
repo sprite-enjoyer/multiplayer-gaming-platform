@@ -10,6 +10,7 @@ class GlobalStore {
   currentGame?: Game;
 
   constructor() {
+
     makeObservable(this, {
       playerName: observable,
       roomID: observable,
