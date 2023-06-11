@@ -1,4 +1,5 @@
-import { action, makeObservable, observable } from "mobx";
+import { action, computed, makeObservable, observable } from "mobx";
+import { FullScoreStoreData } from "../misc/types";
 
 class ScoreStore {
 
@@ -12,6 +13,8 @@ class ScoreStore {
       opponentScore: observable,
       setPlayerScore: action,
       setOpponentScore: action,
+      setFullScoreStoreData: action,
+      fullScoreStoreData: computed,
     });
   }
 
@@ -22,6 +25,21 @@ class ScoreStore {
   setOpponentScore(newValue: number) {
     this.opponentScore = newValue;
   }
+
+  setFullScoreStoreData(newValue: FullScoreStoreData) {
+    const { playerScore, opponentScore } = newValue;
+    this.setPlayerScore(playerScore);
+    this.setOpponentScore(opponentScore);
+  }
+
+  get fullScoreStoreData() {
+    return {
+      playerScore: this.playerScore,
+      opponentScore: this.opponentScore
+    };
+  }
+
+
 }
 
 export default ScoreStore;

@@ -39,17 +39,22 @@ abstract class GameStore {
   }
 
   sendMessage<T>(message: T) {
-    console.log("sending message")
     this.socket.emit("send-message", message, this.globalStore.roomID);
   }
 
-  abstract receiveMessage(): void;
+  abstract waitForMessage(): void;
 
   abstract handlePlayerCount(count: number): void;
 
   abstract setFullGameState(state: any): void;
 
   abstract get fullGameState(): any;
+
+  abstract sendScoreInformation(): void;
+
+  abstract waitForScoreUpdate(): void;
+
+  abstract restart(): void;
 }
 
 export default GameStore;

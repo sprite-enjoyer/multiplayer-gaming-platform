@@ -42,11 +42,7 @@ const GameRenderer = ({ GameElement }: GameRendererProps) => {
           gap: "20px",
         }}
       >
-        <Typography
-          variant="h4"
-        >
-          {globalStore.currentGame}
-        </Typography>
+        <Typography variant="h4">{globalStore.currentGame}</Typography>
       </Box>
       <Box
         sx={{
@@ -57,9 +53,7 @@ const GameRenderer = ({ GameElement }: GameRendererProps) => {
       >
         <GameElement scoreStore={scoreStore} />
       </Box>
-      <GameScore
-        scoreStore={scoreStore}
-      />
+      <GameScore scoreStore={scoreStore} />
     </Box>
   );
 };

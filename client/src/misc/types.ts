@@ -3,13 +3,12 @@ export enum Game {
   MemoryGame = "MemoryGame",
 }
 
-export interface ScoreInformation {
+export interface FullScoreStoreData {
   playerScore: number,
   opponentScore: number,
 }
 
-
-export interface TicTacToeGameState extends ScoreInformation {
+export interface TicTacToeGameState extends FullScoreStoreData {
   gameBoard: (Player | undefined)[],
 }
 

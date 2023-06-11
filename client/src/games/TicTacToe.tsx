@@ -2,7 +2,7 @@ import { useContext, useEffect } from "react";
 import { GlobalStoreContext } from "../App";
 import ScoreStore from "../stores/ScoreStore";
 import TicTacToeStore from "../stores/TicTacToeStore";
-import { Box } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import CellList from "../components/TicTacToe/CellList";
 
 interface TicTacToeProps {
@@ -15,7 +15,8 @@ const TicTacToe = ({ scoreStore }: TicTacToeProps) => {
 
   useEffect(() => {
     ticTacToeStore.joinRoom();
-    ticTacToeStore.receiveMessage();
+    ticTacToeStore.waitForMessage();
+    ticTacToeStore.waitForScoreUpdate();
 
     return () => {
       ticTacToeStore.socket.disconnect();
@@ -34,6 +35,17 @@ const TicTacToe = ({ scoreStore }: TicTacToeProps) => {
       }}
     >
       <CellList ticTacToeStore={ticTacToeStore} />
+      <div />
+      <Button
+        variant="contained"
+        onClick={() => ticTacToeStore.restart()}
+        sx={{
+          marginTop: "20px",
+        }}
+      >
+        Restart
+      </Button>
+      <div />
     </Box>
   );
 };

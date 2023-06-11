@@ -25,20 +25,21 @@ io.on("connection", (socket) => {
         console.log("socket disconnected, reason: ", reason);
     });
     socket.on("join-room", async (roomID, callback) => {
-        console.log(roomID, ": roomID");
         if (!roomID) {
             callback(0, false);
-            console.log("room id is undefined!");
             return;
         }
         const { length } = await io.in(roomID).fetchSockets();
-        console.log(length, ": length!");
         if ((length) === 2) {
             callback(length, false);
             return;
         }
         socket.join(roomID);
         callback(length, true);
+    });
+    socket.on("send-score", (room, fullScoreStoreData) => {
+        console.log("received score info, :", fullScoreStoreData);
+        socket.broadcast.to(room).emit("receive-score", fullScoreStoreData);
     });
     socket.on("send-message", (message, room) => {
         console.log("received message: ", message);

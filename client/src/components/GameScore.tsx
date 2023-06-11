@@ -1,5 +1,6 @@
 import { Box, Typography } from "@mui/material"
 import ScoreStore from "../stores/ScoreStore"
+import { observer } from "mobx-react";
 
 interface GameScoreProps {
   scoreStore: ScoreStore,
@@ -31,4 +32,4 @@ const GameScore = ({ scoreStore }: GameScoreProps) => {
   );
 };
 
-export default GameScore;
+export default observer(GameScore);

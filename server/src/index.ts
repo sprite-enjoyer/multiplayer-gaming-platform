@@ -29,14 +29,11 @@ io.on("connection", (socket) => {
   socket.on(
     "join-room",
     async (roomID: string | undefined, callback: (length: number, success: boolean) => void) => {
-      console.log(roomID, ": roomID");
       if (!roomID) {
         callback(0, false);
-        console.log("room id is undefined!");
         return;
       }
       const { length } = await io.in(roomID).fetchSockets();
-      console.log(length, ": length!")
       if ((length) === 2) {
         callback(length, false);
         return;
@@ -47,8 +44,14 @@ io.on("connection", (socket) => {
     }
   );
 
+  socket.on("send-score", (room: string, fullScoreStoreData) => {
+    console.log("received score info, :", fullScoreStoreData);
+    socket.broadcast.to(room).emit("receive-score", fullScoreStoreData);
+  })
+
   socket.on("send-message", (message: any, room: string) => {
     console.log("received message: ", message);
     socket.broadcast.to(room).emit("receive-message", message);
   });
 });
+

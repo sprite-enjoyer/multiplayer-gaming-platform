@@ -1,25 +1,22 @@
 import { action, computed, makeObservable, observable } from "mobx";
 import ScoreStore from "./ScoreStore";
-import { Player, TicTacToeGameState } from "../misc/types";
+import { Player, FullScoreStoreData, TicTacToeGameState } from "../misc/types";
 import GameStore from "./GameStore";
 import GlobalStore from "./GlobalStore";
 
 class TicTacToeStore extends GameStore {
 
-  player: Player;
+  player?: Player;
 
-  gameBoard: (Player | undefined)[] = [];
+  gameBoard: (Player | undefined)[] = new Array(9).fill(undefined);
 
   scoreStore: ScoreStore;
 
   frozen = true;
 
   constructor(scoreStore: ScoreStore, globalStore: GlobalStore) {
-    console.log("store created")
     super(globalStore);
-    this.player = "O";
     this.scoreStore = scoreStore;
-    this.gameBoard = new Array(9).fill(undefined);
 
     makeObservable(this, {
       player: observable,
@@ -32,8 +29,10 @@ class TicTacToeStore extends GameStore {
       handlePlayerCount: action,
       setCurrentPlayer: action,
       setFullGameState: action,
+      restart: action,
       setGameBoard: action,
-      receiveMessage: action,
+      waitForMessage: action,
+      waitForScoreUpdate: action,
       setFrozen: action,
       didWin: computed,
       fullGameState: computed,
@@ -74,15 +73,14 @@ class TicTacToeStore extends GameStore {
 
   doStuffAfterSomebodyWins() {
     this.scoreStore.setPlayerScore(this.scoreStore.playerScore + 1);
-    // TODO also notify the other player 
+    this.sendScoreInformation();
   }
 
   makeMove(index: number) {
     this.setFrozen(true);
     this.gameBoard[index] = this.player;
     this.sendMessage(this.fullGameState);
-    const didPlayerWin = this.didWin;
-    if (didPlayerWin) this.doStuffAfterSomebodyWins();
+    if (this.didWin) this.doStuffAfterSomebodyWins();
   }
 
   handlePlayerCount(count: number): void {
@@ -91,12 +89,30 @@ class TicTacToeStore extends GameStore {
     if (this.player === "X") this.setFrozen(false);
   }
 
-  receiveMessage(): void {
+  waitForMessage(): void {
     this.socket.on("receive-message", (state: typeof this.fullGameState) => {
       this.setFullGameState(state);
       this.setFrozen(false);
-      console.log("data received: ", state);
     });
+  }
+
+  sendScoreInformation() {
+    this.socket.emit("send-score", this.globalStore.roomID, this.scoreStore.fullScoreStoreData);
+  }
+
+  waitForScoreUpdate() {
+    this.socket.on("receive-score", (fullScoreStoreData: FullScoreStoreData) => {
+      this.scoreStore.setFullScoreStoreData(fullScoreStoreData);
+      this.setFrozen(true);
+    })
+  }
+
+  restart(): void {
+    const shouldFreezeThisPlayer = this.player === "O";
+    this.gameBoard = new Array(9).fill(undefined);
+    this.setFrozen(shouldFreezeThisPlayer);
+    this.sendMessage(this.fullGameState);
+    if (!shouldFreezeThisPlayer) this.sendScoreInformation();
   }
 
   get didWin() {

@@ -18,11 +18,7 @@ const Cell = ({ ticTacToeStore, position, mark }: CellProps) => {
   }, [mark])
 
   const handleClick = () => {
-    if (mark || ticTacToeStore.frozen) {
-      console.log("the cell is clicked or frozen");
-      return;
-    }
-
+    if (mark || ticTacToeStore.frozen) return;
     ticTacToeStore.makeMove(position);
   }
 
