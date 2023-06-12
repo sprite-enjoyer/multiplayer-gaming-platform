@@ -12,7 +12,9 @@ abstract class GameStore {
 
   shouldStartGame = false;
 
-  abstract frozen: boolean;
+  abstract playerMovesRestricted: boolean;
+
+  abstract everyPlayerPresent: boolean;
 
   constructor(globalStore: GlobalStore, opponent?: string) {
 
@@ -55,6 +57,7 @@ abstract class GameStore {
   abstract waitForScoreUpdate(): void;
 
   abstract restart(): void;
+
 }
 
 export default GameStore;

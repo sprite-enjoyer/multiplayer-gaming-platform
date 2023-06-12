@@ -2,13 +2,13 @@ import X from "../../assets/x.svg";
 import O from "../../assets/o.svg";
 import { useMemo, useState } from "react";
 import TicTacToeStore from "../../stores/TicTacToeStore";
-import { Player } from "../../misc/types";
+import { TicTacToePlayer } from "../../misc/types";
 import { observer } from "mobx-react";
 
 interface CellProps {
   ticTacToeStore: TicTacToeStore,
   position: number,
-  mark?: Player,
+  mark?: TicTacToePlayer,
 };
 
 const Cell = ({ ticTacToeStore, position, mark }: CellProps) => {
@@ -17,10 +17,7 @@ const Cell = ({ ticTacToeStore, position, mark }: CellProps) => {
     return mark === "X" ? X : O;
   }, [mark])
 
-  const handleClick = () => {
-    if (mark || ticTacToeStore.frozen) return;
-    ticTacToeStore.makeMove(position);
-  }
+  const handleClick = () => ticTacToeStore.makeMove(position);
 
   return (
     <div

@@ -2,6 +2,7 @@ export enum Game {
   TicTacToe = "TicTacToe",
   MemoryGame = "MemoryGame",
 }
+export type TicTacToePlayer = "X" | "O";
 
 export interface FullScoreStoreData {
   playerScore: number,
@@ -9,7 +10,5 @@ export interface FullScoreStoreData {
 }
 
 export interface TicTacToeGameState extends FullScoreStoreData {
-  gameBoard: (Player | undefined)[],
+  gameBoard: (TicTacToePlayer | undefined)[],
 }
-
-export type Player = "X" | "O";

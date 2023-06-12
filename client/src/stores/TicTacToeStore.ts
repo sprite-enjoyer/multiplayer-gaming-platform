@@ -1,18 +1,20 @@
 import { action, computed, makeObservable, observable } from "mobx";
 import ScoreStore from "./ScoreStore";
-import { Player, FullScoreStoreData, TicTacToeGameState } from "../misc/types";
+import { TicTacToePlayer, FullScoreStoreData, TicTacToeGameState } from "../misc/types";
 import GameStore from "./GameStore";
 import GlobalStore from "./GlobalStore";
 
 class TicTacToeStore extends GameStore {
 
-  player?: Player;
+  player?: TicTacToePlayer;
 
-  gameBoard: (Player | undefined)[] = new Array(9).fill(undefined);
+  gameBoard: (TicTacToePlayer | undefined)[] = new Array(9).fill(undefined);
 
   scoreStore: ScoreStore;
 
-  frozen = true;
+  playerMovesRestricted = true;
+
+  everyPlayerPresent = false;
 
   constructor(scoreStore: ScoreStore, globalStore: GlobalStore) {
     super(globalStore);
@@ -21,10 +23,12 @@ class TicTacToeStore extends GameStore {
     makeObservable(this, {
       player: observable,
       gameBoard: observable,
-      frozen: observable,
+      playerMovesRestricted: observable,
+      everyPlayerPresent: observable,
       setPlayer: action,
       makeMove: action,
       setPlayerMarkAtPosition: action,
+      setEveryPlayerPresent: action,
       doStuffAfterSomebodyWins: action,
       handlePlayerCount: action,
       setCurrentPlayer: action,
@@ -33,7 +37,7 @@ class TicTacToeStore extends GameStore {
       setGameBoard: action,
       waitForMessage: action,
       waitForScoreUpdate: action,
-      setFrozen: action,
+      setPlayerMovesRestricted: action,
       didWin: computed,
       fullGameState: computed,
     });
@@ -47,12 +51,16 @@ class TicTacToeStore extends GameStore {
     this.gameBoard = newValue;
   }
 
-  setFrozen(newValue: boolean) {
-    this.frozen = newValue;
+  setPlayerMovesRestricted(newValue: boolean) {
+    this.playerMovesRestricted = newValue;
   }
 
   setPlayerMarkAtPosition(index: number) {
     this.gameBoard[index] = this.player;
+  }
+
+  setEveryPlayerPresent(newValue: boolean) {
+    this.everyPlayerPresent = newValue;
   }
 
   setFullGameState(state: TicTacToeGameState) {
@@ -67,7 +75,7 @@ class TicTacToeStore extends GameStore {
     this.scoreStore.setOpponentScore(processedState.opponentScore);
   }
 
-  setCurrentPlayer(newValue: Player) {
+  setCurrentPlayer(newValue: TicTacToePlayer) {
     this.player = newValue;
   }
 
@@ -77,22 +85,25 @@ class TicTacToeStore extends GameStore {
   }
 
   makeMove(index: number) {
-    this.setFrozen(true);
+    if (!this.everyPlayerPresent || this.gameBoard[index] || this.playerMovesRestricted) return;
     this.gameBoard[index] = this.player;
+    this.setPlayerMovesRestricted(true);
     this.sendMessage(this.fullGameState);
     if (this.didWin) this.doStuffAfterSomebodyWins();
   }
 
   handlePlayerCount(count: number): void {
-    if (count === 0) this.setPlayer("X");
-    else this.setPlayer("O");
-    if (this.player === "X") this.setFrozen(false);
+    if (count === 0) this.setPlayer("O");
+    else this.setPlayer("X");
+    if (this.player === "X") this.setPlayerMovesRestricted(false);
+    if (count === 1) this.setEveryPlayerPresent(true);
   }
 
   waitForMessage(): void {
     this.socket.on("receive-message", (state: typeof this.fullGameState) => {
       this.setFullGameState(state);
-      this.setFrozen(false);
+      this.setPlayerMovesRestricted(false);
+      this.setEveryPlayerPresent(true);
     });
   }
 
@@ -103,14 +114,14 @@ class TicTacToeStore extends GameStore {
   waitForScoreUpdate() {
     this.socket.on("receive-score", (fullScoreStoreData: FullScoreStoreData) => {
       this.scoreStore.setFullScoreStoreData(fullScoreStoreData);
-      this.setFrozen(true);
+      this.setPlayerMovesRestricted(true);
     })
   }
 
   restart(): void {
     const shouldFreezeThisPlayer = this.player === "O";
     this.gameBoard = new Array(9).fill(undefined);
-    this.setFrozen(shouldFreezeThisPlayer);
+    this.setPlayerMovesRestricted(shouldFreezeThisPlayer);
     this.sendMessage(this.fullGameState);
     if (!shouldFreezeThisPlayer) this.sendScoreInformation();
   }

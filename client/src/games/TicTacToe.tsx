@@ -12,7 +12,6 @@ interface TicTacToeProps {
 const TicTacToe = ({ scoreStore }: TicTacToeProps) => {
   const globalStore = useContext(GlobalStoreContext);
   const ticTacToeStore = new TicTacToeStore(scoreStore, globalStore);
-
   useEffect(() => {
     ticTacToeStore.joinRoom();
     ticTacToeStore.waitForMessage();
